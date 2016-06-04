@@ -6,7 +6,7 @@ app.controller('MainCtrl', ['$scope', '$q', 'airportsService',
 function ($scope, $q, airportsService) {
 
 	$q.all([ airportsService.updateAirports() ]).then(function(d){
-		// Actually load the controller
+		// Actually DO something
 		console.log(airportsService.getAirports().SVQ);
 	});
 	

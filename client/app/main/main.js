@@ -49,8 +49,10 @@ function($http, $q){
 	   		catch(e){}
 
 	   	})
-
 	    return airports;
+	    
+	  }).finally(function(){
+	  	console.log("Done!");
 	  });
 	}
 
