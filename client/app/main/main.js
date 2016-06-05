@@ -11,8 +11,8 @@ var app = angular.module('simuvuelosApp')
   });
 
 
-app.factory('airportsService', ['$http', '$q',
-function($http, $q){
+app.factory('airportsService', ['$http', '$q', '$timeout',
+function($http, $q, $timeout){
 
 	var spanishAirports = [
 	  'ABC',        'ACE',
@@ -40,13 +40,26 @@ function($http, $q){
 	   	angular.forEach(splitted, function(value){
 	   		try {
 		   		var subsplitted = value.split(',');
-		   		var code = subsplitted[4];
-		   		code = code.replace(/\"/g, '');
-		   		var lat = subsplitted[6];
-		   		var lng = subsplitted[7];
-		   		airports[code] = { 'lat': lat, 'lng': lng }
+		   		var name = subsplitted[1].replace(/\"/g, '');
+		   		var code = subsplitted[4].replace(/\"/g, '');;
+		   		var lat = parseFloat(subsplitted[6]);
+		   		var lng = parseFloat(subsplitted[7]);
+		   		if(_.indexOf(spanishAirports, code)>0){
+		   			console.log("Adding " + code);
+			   		airports[code] = { 
+			   			lat: lat, 
+			   			lng: lng, 
+			   			message: name,
+			   			focus: false,
+			   			draggable: false,
+			   			icon: {
+			   				iconUrl: 'assets/images/paper-plane-16.png',
+			   				iconSize: [16, 16]
+			   			}   			
+			   		}
+			   	}
 	   		}
-	   		catch(e){}
+	   		catch(e){}  	
 
 	   	})
 	    return airports;
