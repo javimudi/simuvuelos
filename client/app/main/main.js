@@ -20,7 +20,7 @@ function($http, $q, $timeout){
 	  'BJZ',        'EAS',        'FUE',        'GMZ',
 	  'GRO',        'GRX',        'HSK',        'IBZ',
 	  'LCG',        'LEI',        'LEN',        'LPA',
-	  'MAD',        'MAH',        'MCV',        'MJV',
+	  'MAD',        'MAH',        'MJV',
 	  'MLN',        'ODB',        'OVD',        'PMI',
 	  'PNA',        'QSA',        'REU',        'RGS',
 	  'RJL',        'SCQ',        'SDR',        'SLM',
@@ -49,7 +49,7 @@ function($http, $q, $timeout){
 			   		airports[code] = { 
 			   			lat: lat, 
 			   			lng: lng, 
-			   			message: name,
+			   			message: '<airport-message airport='+code+' name='+name+'></airport-messages>',
 			   			focus: false,
 			   			draggable: false,
 			   			icon: {
@@ -69,10 +69,66 @@ function($http, $q, $timeout){
 	  });
 	}
 
+
+	var getRoutes = function(code, flavour){
+
+		console.log("Getting " + flavour + " for " + code);
+
+		var params = {};
+        
+	    code = (typeof code != 'undefined') ? code : 'SVQ';
+	    flavour = (typeof flavour != 'undefined') ? flavour : 'arrivals';
+	    var movement = (flavour=='arrivals') ? 'L' : 'S';
+
+	    var url ='http://www.aena.es/csee/Satellite/infovuelos/es/';
+	    params.destiny = ''; // Mandatory ??
+	    params.mov = movement;
+	    params.origin_ac = code;
+
+
+		return $http.get(url, {params: params}).then(function(response){
+			console.log(response);
+			console.log("Dentro http");
+			// var parser = new DOMParser();
+			// var doc = parser.parseFromString(response.data, 'text/html');
+			console.log(response.data);
+			return response.data;
+		});
+	}
+
+
+	var getDepartures = function(code){
+	  	return getRoutes(code, 'departures');
+	 }
+
+	 var getArrivals = function(code) {
+		 return getRoutes(code, 'arrivals'); 	
+	 }
+
 	return {
-	  getSpanishAirports: spanishAirports,
-	  getAirports: function(){ return airports; },
-	  updateAirports: updateAirports
+	  getSpanishAirports: function(){ return spanishAirports },
+	  getAirports: function(){ return airports },
+	  updateAirports: updateAirports,
+	  getDepartures: getDepartures,
+	  getArrivals: getArrivals
 	}
 
 }]);
+
+
+app.controller('airportMessageCtlr', ['$scope', 'airportsService',
+	function($scope, airportsService){
+		$scope.getDepartures = airportsService.getDepartures;
+		$scope.getArrivals = airportsService.getArrivals;
+	}])
+
+
+app.directive('airportMessage', function(){
+	return {
+		restrict: 'E',
+		template: function(elem, attr){
+			return '<a ng-click="getDepartures(\'' + attr.airport + '\')">'+attr.name+'</a>';
+		},
+		controller: 'airportMessageCtlr'
+	}
+})
