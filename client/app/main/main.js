@@ -81,7 +81,6 @@ function($http, $q, $timeout){
 	    var movement = (flavour=='arrivals') ? 'L' : 'S';
 
 	    var url ='http://www.aena.es/csee/Satellite/infovuelos/es/';
-	    params.destiny = ''; // Mandatory ??
 	    params.mov = movement;
 	    params.origin_ac = code;
 
