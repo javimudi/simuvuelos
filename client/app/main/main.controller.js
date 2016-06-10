@@ -26,6 +26,9 @@ function ($scope, $q, airportsService) {
 
 
 
+	// airportsService.updateAirports().then(function(response){
+	// 	console.log("Done!");
+	// });
 	$q.all([ airportsService.updateAirports() ]).then(function(d){
 		// Actually DO something
 		// console.log(d[0]);

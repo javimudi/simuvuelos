@@ -5,9 +5,8 @@ describe('Controller: MainCtrl', function () {
   // load the controller's module
   beforeEach(module('simuvuelosApp'));
 
-  var MainCtrl,
-      scope,
-      $httpBackend;
+  var MainCtrl, scope, $httpBackend;
+  var airportsService;
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function (_$httpBackend_, $controller, $rootScope) {
@@ -16,9 +15,7 @@ describe('Controller: MainCtrl', function () {
       .respond(['HTML5 Boilerplate', 'AngularJS', 'Karma', 'Express']);
 
     scope = $rootScope.$new();
-    MainCtrl = $controller('MainCtrl', {
-      $scope: scope
-    });
+    MainCtrl = $controller('MainCtrl', { $scope: scope });
   }));
 
   it('should attach a list of things to the scope', function () {
