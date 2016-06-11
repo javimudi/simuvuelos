@@ -2,9 +2,11 @@
 
 var app = angular.module('simuvuelosApp');
 
-app.controller('MainCtrl', ['$scope', '$q', 'airportsService', 
-function ($scope, $q, airportsService) {
+app.controller('MainCtrl', ['$scope', 'airportsService', 
+function ($scope, airportsService) {
 
+
+	$scope.allAirports = {};
 
 	// Leaflet MAP
 	angular.extend($scope,
@@ -25,15 +27,10 @@ function ($scope, $q, airportsService) {
 	    });
 
 
-
-	// airportsService.updateAirports().then(function(response){
-	// 	console.log("Done!");
-	// });
-	$q.all([ airportsService.updateAirports() ]).then(function(d){
-		// Actually DO something
-		// console.log(d[0]);
+	// Starting data
+	airportsService.updateAirports().then(function(response){
+		$scope.allAirports = response;
 	});
-	
 
 }]);
 

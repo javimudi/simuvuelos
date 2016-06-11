@@ -4,7 +4,7 @@
 module.exports = function(config) {
   config.set({
     // base path, that will be used to resolve files and exclude
-    basePath: '',
+    basePath: './',
 
     // testing framework to use (jasmine/mocha/qunit/...)
     frameworks: ['jasmine'],
@@ -17,9 +17,10 @@ module.exports = function(config) {
       'client/bower_components/angular-resource/angular-resource.js',
       'client/bower_components/angular-cookies/angular-cookies.js',
       'client/bower_components/angular-sanitize/angular-sanitize.js',
-      'client/bower_components/angular-route/angular-route.js',
       'client/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
-      'client/bower_components/lodash/dist/lodash.compat.js',
+      'client/bower_components/lodash/lodash.js',
+      'client/bower_components/leaflet/dist/leaflet-src.js',
+      'client/bower_components/angular-leaflet-directive/dist/angular-leaflet-directive.js',
       'client/bower_components/angular-ui-router/release/angular-ui-router.js',
       'client/app/app.js',
       'client/app/app.coffee',
@@ -70,7 +71,7 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['PhantomJS'],
+    browsers: ['Chrome'],
 
 
     // Continuous Integration mode
