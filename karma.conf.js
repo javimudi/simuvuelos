@@ -1,8 +1,8 @@
 // Karma configuration
 // http://karma-runner.github.io/0.10/config/configuration-file.html
 
-module.exports = function(config) {
-  config.set({
+var process = require('process');
+var configuration = {
     // base path, that will be used to resolve files and exclude
     basePath: './',
 
@@ -54,9 +54,6 @@ module.exports = function(config) {
     // web server port
     port: 8080,
 
-    // level of logging
-    // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
-    logLevel: config.LOG_INFO,
 
 
     // enable / disable watching file and executing tests whenever any file changes
@@ -86,9 +83,19 @@ module.exports = function(config) {
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
     singleRun: true
-  });
-};
+}
+
 
 if (process.env.TRAVIS) {
     configuration.browsers = ['Chrome_travis_ci'];
+}
+
+
+module.exports = function(config){
+
+  // level of logging
+  // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
+  configuration.logLevel = config.LOG_INFO;
+
+  config.set(configuration);
 }
