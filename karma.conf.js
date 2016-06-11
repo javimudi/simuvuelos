@@ -74,8 +74,21 @@ module.exports = function(config) {
     browsers: ['Chrome'],
 
 
+ 
+    customLaunchers: {
+        Chrome_travis_ci: {
+            base: 'Chrome',
+            flags: ['--no-sandbox']
+        }
+    },
+
+
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
     singleRun: true
   });
 };
+
+if (process.env.TRAVIS) {
+    configuration.browsers = ['Chrome_travis_ci'];
+}
