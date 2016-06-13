@@ -80,16 +80,10 @@ function($http, $q, $timeout){
 	    flavour = (typeof flavour != 'undefined') ? flavour : 'arrivals';
 	    var movement = (flavour=='arrivals') ? 'L' : 'S';
 
-	    var url ='http://www.aena.es/csee/Satellite/infovuelos/es/';
 	    params.mov = movement;
 	    params.origin_ac = code;
 
-
-		return $http.get(url, {params: params}).then(function(response){
-			console.log(response);
-			console.log("Dentro http");
-			// var parser = new DOMParser();
-			// var doc = parser.parseFromString(response.data, 'text/html');
+		return $http.get('/api/routes', {params: params}).then(function(response){
 			console.log(response.data);
 			return response.data;
 		});

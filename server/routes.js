@@ -11,6 +11,10 @@ module.exports = function(app) {
   // Insert routes below
   app.use('/api/things', require('./api/thing'));
   
+
+  // Custom proxy request
+  app.use('/api/routes', require('./api/routes'))
+
   // All undefined asset or api routes should return a 404
   app.route('/:url(api|auth|components|app|bower_components|assets)/*')
    .get(errors[404]);
