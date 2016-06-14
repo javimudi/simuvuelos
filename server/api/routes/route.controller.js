@@ -94,9 +94,6 @@ exports.index = function(req, res) {
         var promises = [];
         var allresults = [];
 
-        // for(var i=0; i<results.length;i++){
-        //     var result = results[i];
-
             results.forEach(function(result){
 
             promises.push(function(){
