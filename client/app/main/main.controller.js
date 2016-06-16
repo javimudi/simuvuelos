@@ -2,8 +2,8 @@
 
 var app = angular.module('simuvuelosApp');
 
-app.controller('MainCtrl', ['$scope', 'airportsService', 
-function ($scope, airportsService) {
+app.controller('MainCtrl', ['$scope', 'airportsService', 'decorationsService',
+function ($scope, airportsService, decorationsService) {
 
 
 	$scope.allAirports = {};
@@ -23,7 +23,7 @@ function ($scope, airportsService) {
 	            zoomControlPosition: 'bottomright',
 	            scrollWheelZoom: true
 	        },
-
+            decorations: decorationsService.getDecorations()
 	    });
 
 

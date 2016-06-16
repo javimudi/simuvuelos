@@ -10,9 +10,48 @@ var app = angular.module('simuvuelosApp')
       });
   });
 
+app.factory('decorationsService', 
+	['$http',
+	function($http){
 
-app.factory('airportsService', ['$http', '$q', '$timeout',
-function($http, $q, $timeout){
+		var slashed = { offset: 20, repeat: 12, symbol: L.Symbol.dash({pixelSize: 10, pathOptions: {color: '#f00', weight: 2}})};
+
+		var decorations = {}	
+
+        var add = function(route){
+
+    		var poly = {}
+    		poly.coordinates = [ route.from_coordinates, route.to_coordinates ];
+    		slashed.offset = route.offset;
+    		poly.patterns = [slashed];
+    		poly.from = route.from;
+    		poly.to = route.to;	
+
+    		decorations[route.from+'_'+route.to] = poly;
+
+    		console.log(poly);
+        }
+
+        var getDecorations = function(){
+        	return decorations;
+        }
+
+        var clear = function(){
+        	decorations = {};
+        }
+
+        return {
+        	getDecorations: getDecorations,
+        	add: add,
+        	clear: clear
+        }
+
+
+
+	}]);
+
+app.factory('airportsService', ['$http', '$timeout', 'decorationsService',
+function($http, $timeout, decorationsService){
 
 	var spanishAirports = [
 	  'ABC',        'ACE',
@@ -31,6 +70,7 @@ function($http, $q, $timeout){
 
 
 	var airports = {};
+	var allAirports = {};
 	var apiurl = 'http://raw.githubusercontent.com/javimudi/openflights/master/data/airports.dat'
 	var updateAirports = function(){
 
@@ -58,6 +98,20 @@ function($http, $q, $timeout){
 			   			}   			
 			   		}
 			   	}
+
+
+		   		allAirports[code] = { 
+		   			lat: lat, 
+		   			lng: lng, 
+		   			message: '<airport-message airport='+code+' name='+name+'></airport-messages>',
+		   			focus: false,
+		   			draggable: false,
+		   			icon: {
+		   				iconUrl: 'assets/images/paper-plane-16.png',
+		   				iconSize: [16, 16]
+		   			}   			
+		   		}
+
 	   		}
 	   		catch(e){}  	
 
@@ -84,11 +138,46 @@ function($http, $q, $timeout){
 	    params.origin_ac = code;
 
 		return $http.get('/api/routes', {params: params}).then(function(response){
-			console.log(response.data);
-			return response.data;
+			return _.filter(response.data, function(route){ // Only known airports
+				return (route.from in allAirports && route.to in allAirports);
+			});
 		});
 	}
 
+	var getInFlights = function(code){
+		var filtered = [];
+		var oks = [];
+		return getAllRoutes(code).then(function(routes){
+			filtered = _.filter(routes, function(route){
+				return ('actualTakeoff' in route && 'expectedLanding' in route);
+			});
+		}).then(function(){
+			angular.forEach(filtered, function(inroute){
+				inroute.offset = (function(){
+					var now = moment();
+					var takeoff = moment(inroute.actualTakeoff);
+					var landing = moment(inroute.expectedLanding);
+
+					if(landing<takeoff){
+						landing.add(1, 'days');
+					}
+					
+					console.log(now);
+					console.log(takeoff);
+					console.log(landing);
+
+					var offset = 100 * (now - takeoff)/(landing - takeoff);
+					console.log("Offset");
+					console.log(offset);
+					return offset;
+				}());
+
+				oks.push(inroute);
+			});
+		}).then(function(){
+			return oks; 
+		})
+	}
 
 	var getDepartures = function(code){
 	  	return getRoutes(code, 'departures');
@@ -98,29 +187,70 @@ function($http, $q, $timeout){
 		 return getRoutes(code, 'arrivals'); 	
 	 }
 
+	 var getAllRoutes = function(code){
+	 	var all = [];
+	 	var oks = [];
+	 	return getDepartures(code).then(function(departures){
+	 		return getArrivals(code).then(function(arrivals){
+	 			all = _.flatten(arrivals, departures);
+
+	 		}).then(function(){
+	 			angular.forEach(all, function(route){
+					route.from_coordinates = [allAirports[route.from].lat, allAirports[route.from].lng];
+					route.to_coordinates = [allAirports[route.to].lat, allAirports[route.to].lng];
+					// console.log(route);
+					oks.push(route);
+		 		});
+
+	 		}).then(function(){
+	 			return oks;
+	 		})
+	 	});
+
+	 }
+
 	return {
 	  getSpanishAirports: function(){ return spanishAirports },
 	  getAirports: function(){ return airports },
+	  getWorldAirports: function(){ return allAirports },
 	  updateAirports: updateAirports,
 	  getDepartures: getDepartures,
-	  getArrivals: getArrivals
+	  getArrivals: getArrivals,
+	  getAllRoutes: getAllRoutes,
+	  getInFlights: getInFlights
 	}
 
 }]);
 
 
-app.controller('airportMessageCtlr', ['$scope', 'airportsService',
-	function($scope, airportsService){
+app.controller('airportMessageCtlr', ['$scope', 'airportsService', 'decorationsService',
+	function($scope, airportsService, decorationsService){
 		$scope.getDepartures = airportsService.getDepartures;
 		$scope.getArrivals = airportsService.getArrivals;
-	}])
+
+		$scope.getAllRoutes = function(code){
+			airportsService.getAllRoutes(code).then(function(results){
+				angular.forEach(results, function(route){
+					decorationsService.add(route);
+				});
+			});
+		}
+		$scope.getInFlights = function(code){
+			airportsService.getInFlights(code).then(function(results){
+				angular.forEach(results, function(route){
+					decorationsService.add(route);
+				});
+			});
+		}
+
+	}]);
 
 
 app.directive('airportMessage', function(){
 	return {
 		restrict: 'E',
 		template: function(elem, attr){
-			return '<a ng-click="getDepartures(\'' + attr.airport + '\')">'+attr.name+'</a>';
+			return '<a ng-click="getInFlights(\'' + attr.airport + '\')">'+attr.name+'</a>';
 		},
 		controller: 'airportMessageCtlr'
 	}
