@@ -141,6 +141,8 @@ function($http, $timeout, decorationsService){
 			return _.filter(response.data, function(route){ // Only known airports
 				return (route.from in allAirports && route.to in allAirports);
 			});
+		}, function(response){
+			console.log("ERROR: " + response);
 		});
 	}
 
@@ -158,10 +160,14 @@ function($http, $timeout, decorationsService){
 					var takeoff = moment(inroute.actualTakeoff);
 					var landing = moment(inroute.expectedLanding);
 
+					if(takeoff.hours() > now.hours()){
+						takeoff.add(-1, 'days');
+					}
+
 					if(landing<takeoff){
 						landing.add(1, 'days');
 					}
-					
+
 					console.log(now);
 					console.log(takeoff);
 					console.log(landing);
