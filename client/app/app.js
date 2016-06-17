@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('simuvuelosApp', [
+angular.module('simuvuelosApp', [
   'ngCookies',
   'ngResource',
   'ngSanitize',

@@ -41,7 +41,7 @@ exports.index = function(req, res) {
                 var pattern3 = /(\d{4})\-(\d{2})\-(\d{2})\+(\d{2})\%3A(\d{2})/;
                 var re = pattern2.exec(dest);
                 
-                if(re!=null){
+                if(re!==null){
                     var name = re[1];
                     dest = re[2];
                     var arrl = pattern1.exec(link);
@@ -50,14 +50,13 @@ exports.index = function(req, res) {
 
 
 
-                    if (arrl!=null){
+                    if (arrl!==null){
                         var expectedDate = pattern3.exec(arrl[2]);
                         var code = arrl[4];
-                        var name = name;
                         var company = arrl[1];
                         var flightno = arrl[3];
 
-                        if(expectedDate!=null){
+                        if(expectedDate!==null){
                             var when = new Date(expectedDate[1],
                               expectedDate[2]-1,
                               expectedDate[3],
@@ -96,7 +95,7 @@ exports.index = function(req, res) {
 
             results.forEach(function(result){
 
-            promises.push(function(){
+            promises.push((function(){
                 return rp.get(result.infourl).then(function(html){
                   var $hit = cheerio.load(html);
                   $hit('tr').each(function(){
@@ -116,7 +115,7 @@ exports.index = function(req, res) {
                     var _prevdate = result.takeoff || result.landing; // TODO: Handle day changes
 
                     var prevdate = _prevdate.clone();
-                    if(Atake!=null){
+                    if(Atake!==null){
                         var actualTakeoff = prevdate;
                         actualTakeoff.hour(Atake[1].split(':')[0]);
                         actualTakeoff.minute(Atake[1].split(':')[1]);
@@ -124,7 +123,7 @@ exports.index = function(req, res) {
 
                     } 
 
-                    if(Eland!=null){
+                    if(Eland!==null){
                         var expectedLanding = prevdate;
                         expectedLanding.hour(Eland[1].split(':')[0]);
                         expectedLanding.minute(Eland[1].split(':')[1]);
@@ -133,7 +132,7 @@ exports.index = function(req, res) {
                     }
 
 
-                    if(Etake!=null){
+                    if(Etake!==null){
                         var expectedTakeoff = prevdate;
                         expectedTakeoff.hour(Etake[1].split(':')[0]);
                         expectedTakeoff.minute(Etake[1].split(':')[1]);
@@ -142,7 +141,7 @@ exports.index = function(req, res) {
                     }
 
 
-                    if(Aland!=null){
+                    if(Aland!==null){
                         var actualLanding = prevdate;
                         actualLanding.hour(Aland[1].split(':')[0]);
                         actualLanding.minute(Aland[1].split(':')[1]);
@@ -158,7 +157,7 @@ exports.index = function(req, res) {
                 });
 
 
-            }());
+            })());
 
         });
 

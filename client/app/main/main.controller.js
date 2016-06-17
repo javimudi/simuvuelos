@@ -19,7 +19,7 @@ function ($scope, airportsService, decorationsService) {
 
 	        markers: airportsService.getAirports(),
 	        defaults: {
-	            tileLayer: "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+	            tileLayer: 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
 	            zoomControlPosition: 'bottomright',
 	            scrollWheelZoom: true
 	        },
