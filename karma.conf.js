@@ -22,6 +22,7 @@ var configuration = {
       'client/bower_components/leaflet/dist/leaflet-src.js',
       'client/bower_components/angular-leaflet-directive/dist/angular-leaflet-directive.js',
       'client/bower_components/angular-ui-router/release/angular-ui-router.js',
+      'client/bower_components/leaflet-polylinedecorator/leaflet.polylineDecorator.js',
       'client/app/app.js',
       'client/app/app.coffee',
       'client/app/**/*.js',
