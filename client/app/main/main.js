@@ -150,10 +150,10 @@ function($http, $timeout, decorationsService){
 		var filtered = [];
 		var oks = [];
 		return getAllRoutes(code).then(function(routes){
-			filtered = _.filter(routes, function(route){
+			return _.filter(routes, function(route){
 				return ('actualTakeoff' in route && 'expectedLanding' in route);
 			});
-		}).then(function(){
+		}).then(function(filtered){
 			angular.forEach(filtered, function(inroute){
 				inroute.offset = (function(){
 					var now = moment();
@@ -198,15 +198,16 @@ function($http, $timeout, decorationsService){
 	 	var oks = [];
 	 	return getDepartures(code).then(function(departures){
 	 		return getArrivals(code).then(function(arrivals){
-	 			all = _.flatten(arrivals, departures);
+	 			return all = _.flatten(arrivals, departures);
 
-	 		}).then(function(){
+	 		}).then(function(all){
 	 			angular.forEach(all, function(route){
 					route.from_coordinates = [allAirports[route.from].lat, allAirports[route.from].lng];
 					route.to_coordinates = [allAirports[route.to].lat, allAirports[route.to].lng];
 					// console.log(route);
 					oks.push(route);
 		 		});
+		 		return true;
 
 	 		}).then(function(){
 	 			return oks;
