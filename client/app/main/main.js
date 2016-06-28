@@ -198,7 +198,7 @@ function($http, $timeout, decorationsService){
 	 	var oks = [];
 	 	return getDepartures(code).then(function(departures){
 	 		return getArrivals(code).then(function(arrivals){
-	 			return all = _.flatten(arrivals, departures);
+	 			return _.flatten(arrivals, departures);
 
 	 		}).then(function(all){
 	 			angular.forEach(all, function(route){
