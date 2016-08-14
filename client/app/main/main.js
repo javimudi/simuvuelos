@@ -14,7 +14,10 @@ app.factory('decorationsService',
 	['$http',
 	function($http){
 
-		var slashed = { offset: 20, repeat: 12, symbol: L.Symbol.dash({pixelSize: 10, pathOptions: {color: '#f00', weight: 2}})};
+		var slashed = { offset: 20, 
+				repeat: 12, 
+				symbol: L.Symbol.dash({pixelSize: 10, pathOptions: {color: '#f00', weight: 2}})
+			};
 
 		var decorations = {}	
 
